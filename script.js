@@ -118,6 +118,9 @@ function renderWordList() {
 }
 
 // Izgarayı HTML'e ekleme ve hücrelere event ekleme
+// … (önceki kodlar, createEmptyGrid, placeWords, vs. aynı kalır)
+
+/* Render İşlemleri: Hücrelere dokunmatik event listener’ları ekleniyor */
 function renderGrid() {
   const container = document.getElementById("game-container");
   container.innerHTML = "";
@@ -133,10 +136,16 @@ function renderGrid() {
       cell.dataset.row = i;
       cell.dataset.col = j;
       
-      // Hücre event listener'ları
+      // Fare event listener'ları
       cell.addEventListener("mousedown", cellMouseDown);
       cell.addEventListener("mouseover", cellMouseOver);
       cell.addEventListener("mouseup", cellMouseUp);
+      
+      // Dokunmatik cihazlar için ek event listener'ları:
+      cell.addEventListener("touchstart", cellTouchStart);
+      cell.addEventListener("touchmove", cellTouchMove);
+      cell.addEventListener("touchend", cellTouchEnd);
+      cell.addEventListener("touchcancel", cellTouchEnd);
       
       container.appendChild(cell);
       cellElements[i][j] = cell;
@@ -145,6 +154,51 @@ function renderGrid() {
   
   document.addEventListener("mouseup", clearSelection);
 }
+
+/* *****************************************
+   Dokunmatik Event Fonksiyonları
+******************************************* */
+
+/**
+ * Dokunmatik başlangıç (touchstart) olayı için, mevcut mousedown fonksiyonunu çağırır.
+ */
+function cellTouchStart(e) {
+  e.preventDefault(); // Dokunma sırasında sayfanın kaymasını engeller
+  cellMouseDown.call(this, e);
+}
+
+/**
+ * Dokunmatik hareket (touchmove) sırasında, parmağın bulunduğu koordinatta bulunan hücreyi tespit edip, mouseover fonksiyonunu çağırır.
+ */
+function cellTouchMove(e) {
+  e.preventDefault();
+  // İlk dokunuşu alıyoruz
+  const touch = e.touches[0];
+  const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+  if (elem && elem.classList.contains("cell")) {
+    cellMouseOver.call(elem, e);
+  }
+}
+
+/**
+ * Dokunmatik bitiş (touchend/touchcancel) olayı için, mevcut mouseup fonksiyonunu çağırır.
+ */
+function cellTouchEnd(e) {
+  e.preventDefault();
+  // touchend olayında dokunma noktası olmadığı için, mevcut seçilen hücreler üzerinden mouseup fonksiyonunu tetikliyoruz.
+  // Eğer currentSelectedCells boş değilse, onlardan sonuncusu üzerinden mouseup çağırabiliriz.
+  if (currentSelectedCells.length > 0) {
+    cellMouseUp.call(currentSelectedCells[currentSelectedCells.length - 1], e);
+  }
+}
+
+/* *****************************************
+   Kalan Fonksiyonlar (mouse event'leri, seçim, vb.)
+   (cellMouseDown, cellMouseOver, cellMouseUp, clearTempSelection, clearSelection, vs. kodunuzun diğer kısımları aynı kalır)
+******************************************* */
+
+// … (önceki script.js kodunuzun geri kalanı aynı kalır)
+
 
 /* *****************************************
    Seçim İşlemleri
