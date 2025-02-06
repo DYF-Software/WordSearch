@@ -1,6 +1,6 @@
 /* Genel Stil */
 * {
-  box-sizing: border-box;
+  /*box-sizing: border-box;*/
   margin: 0;
   padding: 0;
 }
@@ -16,13 +16,13 @@ body {
   padding: 10px;
 }
 
-/* Header ve kelime listesi */
+/* Header ve Kelime Listesi */
 header {
   text-align: center;
   padding: 10px;
   width: 100%;
   max-width: 600px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255,255,255,0.9);
   border-bottom: 2px solid #ccc;
   margin-bottom: 10px;
 }
@@ -66,53 +66,62 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-x: auto; /* Dar ekranlarda yatay kaydırma */
 }
 
-/* Oyun Izgarası */
+/* Oyun Izgarası (10×10 Matris - Beyaz Alan) */
+/* Varsayılan: Hücre 40px, gap 5px */
 #game-container {
   display: grid;
+  grid-template-columns: repeat(10, 40px);
   gap: 5px;
-  width: 100%;
-  max-width: 500px;
-  /* Responsive grid: min hücre genişliği 40px, maksimum 1fr */
-  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-  background: rgba(255, 255, 255, 0.8);
+  /* Hesaplanan genişlik: 10 * 40px + 9 * 5px = 445px */
+  width: calc(10 * 40px + 9 * 5px);
+  background: #fff;
   padding: 10px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  margin: auto;
 }
 
 /* Hücre Stilleri */
 .cell {
-  aspect-ratio: 1 / 1; /* Hücrelerin kare kalması için */
+  width: 40px;
+  height: 40px;
   border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
+  -webkit-user-select: none;
   cursor: pointer;
   font-weight: bold;
   background-color: #fff;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  font-size: 1rem;
+  /* Hücre içi yazı boyutu: Hücre boyutunun %80’i */
+  font-size: 32px; /* 40px * 0.8 = 32px */
+ /* box-sizing: border-box;*/
 }
 
 .cell:hover {
-  transform: scale(1.1);
+  /* Hafif bir hover efekti: Ölçek değişimi yerine sadece renk geçişi */
+  background-color: #f0f8ff;
 }
 
 .cell.selected {
   background-color: lightblue;
+  color: #fff;
+  border-color: lightblue;
 }
 
-/* Başlangıç Ekranı (varsa) */
+/* Başlangıç Ekranı */
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,17 +157,17 @@ main {
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Küçük ekranlar için ek media query */
+/* Responsive: Ekran daraldığında dinamik boyutlandırma */
+/* Burada JS responsive.js dosyasından gelen inline stiller devreye girecek.
+   Ancak, eğer ekran daralırsa aşağıdaki media query de yardımcı olabilir. */
 @media (max-width: 480px) {
-  header h1 {
-    font-size: 1.5rem;
+  #game-container {
+    grid-template-columns: repeat(10, 30px);
+    width: calc(10 * 30px + 9 * 5px);
   }
-  .word-item {
-    font-size: 0.8rem;
-    padding: 3px 6px;
-  }
-  #start-btn {
-    font-size: 0.9rem;
-    padding: 8px 16px;
+  .cell {
+    width: 30px;
+    height: 30px;
+    font-size: 24px; /* 30px * 0.8 */
   }
 }
