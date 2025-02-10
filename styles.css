@@ -1,19 +1,25 @@
 /* Genel Stil */
 * {
-  /*box-sizing: border-box;*/
   margin: 0;
   padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Scrollbar'ı kaldır */
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #74ABE2, #5563DE);
   color: #333;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
 }
 
 /* Header ve Kelime Listesi */
@@ -22,7 +28,7 @@ header {
   padding: 10px;
   width: 100%;
   max-width: 600px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   border-bottom: 2px solid #ccc;
   margin-bottom: 10px;
 }
@@ -61,50 +67,42 @@ header h1 {
 main {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow-x: auto; /* Dar ekranlarda yatay kaydırma */
 }
 
-/* Oyun Izgarası (10×10 Matris - Beyaz Alan) */
-/* Varsayılan: Hücre 40px, gap 5px */
+/* Oyun Izgarası */
 #game-container {
   display: grid;
-  grid-template-columns: repeat(10, 40px);
+  grid-template-columns: repeat(10, 1fr);
   gap: 5px;
-  /* Hesaplanan genişlik: 10 * 40px + 9 * 5px = 445px */
-  width: calc(10 * 40px + 9 * 5px);
+  width: min(90vw, 445px);
+  height: min(90vh, 445px);
   background: #fff;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  margin: auto;
 }
 
 /* Hücre Stilleri */
 .cell {
-  width: 40px;
-  height: 40px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
-  -webkit-user-select: none;
   cursor: pointer;
   font-weight: bold;
   background-color: #fff;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  /* Hücre içi yazı boyutu: Hücre boyutunun %80’i */
-  font-size: 32px; /* 40px * 0.8 = 32px */
- /* box-sizing: border-box;*/
+  font-size: 2vw; /* Dinamik font boyutu */
 }
 
 .cell:hover {
-  /* Hafif bir hover efekti: Ölçek değişimi yerine sadece renk geçişi */
   background-color: #f0f8ff;
 }
 
@@ -157,17 +155,14 @@ main {
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Responsive: Ekran daraldığında dinamik boyutlandırma */
-/* Burada JS responsive.js dosyasından gelen inline stiller devreye girecek.
-   Ancak, eğer ekran daralırsa aşağıdaki media query de yardımcı olabilir. */
+/* Responsive: Küçük ekranlar için dinamik boyutlandırma */
 @media (max-width: 480px) {
   #game-container {
-    grid-template-columns: repeat(10, 30px);
-    width: calc(10 * 30px + 9 * 5px);
+    grid-template-columns: repeat(10, 1fr);
+    width: 90vw;
+    height: 90vw;
   }
   .cell {
-    width: 30px;
-    height: 30px;
-    font-size: 24px; /* 30px * 0.8 */
+    font-size: 4vw;
   }
 }
